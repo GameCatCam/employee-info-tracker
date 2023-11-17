@@ -1,3 +1,5 @@
+USE employees_db;
+
 INSERT INTO department (dep_name)
 VALUES ("Sales"),
        ("Shipping"),
@@ -11,13 +13,13 @@ VALUES ("Sales Associate", 10.50, 1),
        ("Development Researcher", 16.50, 3),
        ("Building Manager", 22.50, 3);
 
-INSERT INTO employees (id, first_name, last_name, role_id, manager_id)
-VALUES (1, "Charles", "Incharge", 1, 2),
-       (2, "Cheers", "Knowsyourname", 2, 6),
-       (3, "Mega", "Man", 3, 4),
-       (4, "Proto", "Man", 4, 6),
-       (5, "Goku", "Solos", 5, 6),
-       (6, "Thebig", "Man", 6, NULL),
-       (7, "Other", "Name", 1, 2),
-       (8, "More", "Name", 1, 2),
-       (9, "Onemore", "Guy", 3, 4);
+INSERT INTO employees (first_name, last_name, role_id, manager_id)
+VALUES ("Charles", "Incharge", 1, 2),
+       ("Cheers", "Knowsyourname", 2, 6),
+       ("Mega", "Man", 3, 4),
+       ("Proto", "Man", 4, 6),
+       ("Goku", "Solos", 5, 6),
+       ("Thebig", "Man", 6, NULL),
+       ("Other", "Name", 1, 2),
+       ("More", "Name", 1, 2),
+       ("Onemore", "Guy", 3, 4);
