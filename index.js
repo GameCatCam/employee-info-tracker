@@ -53,10 +53,11 @@ async function init() {
             case 'add an employee':
                 await addEmployee();
                 break;
+            case 'update an employee role':
+                updateEmployee();
+                break;
             case 'quit':
                 return;
-            default:
-                updateEmployee();
         }
     } catch (err) {
         console.error(err);
@@ -173,7 +174,7 @@ async function addEmployee() {
 
         const employees = await queryAsync('SELECT id, first_name, last_name FROM employees')
         const managerChoices = employees.map((manager) => ({
-            name: manager.first_name + manager.last_name,
+            name: `${manager.first_name} ${manager.last_name}`,
             value: manager.id
         }))
 
@@ -202,16 +203,14 @@ async function addEmployee() {
             }
         ]);
     
-        await queryAsync(
-            `
-                INSERT INTO employees(first_name, last_name, role_id, manager_id) 
-                VALUES (
-                    '${answers.employeeFirst}', 
-                    '${answers.employeeLast}', 
-                    '${answers.role_id}', 
-                    '${answers.manager_id}')
-            `
-        );
+        await queryAsync(`
+            INSERT INTO employees(first_name, last_name, role_id, manager_id) 
+            VALUES (
+                '${answers.employeeFirst}', 
+                '${answers.employeeLast}', 
+                '${answers.role_id}', 
+                '${answers.manager_id}')
+        `);
         
         console.log(`Added Employee: ${answers.employeeFirst} ${answers.employeeLast}`);
     } catch (err) {
@@ -220,7 +219,47 @@ async function addEmployee() {
 }
 
 async function updateEmployee() {
+    try {
+        const roles = await queryAsync('SELECT id, title FROM roles')
+        const rolesChoices = roles.map((role) => ({
+            name: role.title,
+            value: role.id,
+        }))
 
+        const employees = await queryAsync('SELECT id, first_name, last_name FROM employees')
+        const empChoices = employees.map((emp) => ({
+            name: `${emp.first_name} ${emp.last_name}`,
+            value: emp.id
+        }))
+
+        const answers = await inquirer.prompt([
+            {
+                type: 'list',
+                message: 'Which employee\'s role do you wish to change?',
+                name: 'employee',
+                choices: empChoices
+            },
+            {
+                type: 'list',
+                message: 'Which role are you giving them?',
+                name: 'role',
+                choices: rolesChoices
+            }
+        ]);
+    
+        await queryAsync(`
+            UPDATE employees
+            SET role_id = ${answers.role}
+            WHERE id = ${answers.employee} 
+        `);
+        
+        console.log(`Updated role!`);
+    } catch (err) {
+        console.error(err);
+    } finally {
+        init();
+    }
 }
+
 
 init()
