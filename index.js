@@ -2,6 +2,7 @@ const mysql = require('mysql2');
 const inquirer = require('inquirer');
 const util = require('util');
 
+// establishes connection to MySQL
 const db = mysql.createConnection(
     {
         host: 'localhost',
@@ -12,10 +13,13 @@ const db = mysql.createConnection(
     console.log('Connected to the employees_db!')
 );
 
+// allows us to turn the queries into async functions to better play with Inquirer
 const queryAsync = util.promisify(db.query).bind(db);
 
+// Main inquirer function. Starting branch of the program
 async function init() {
     try {
+        // Prompts for a course of action. Will lead to the following functions.
         const answers = await inquirer.prompt([
             {
             type: 'list',
@@ -33,7 +37,8 @@ async function init() {
             ]
             }
         ]);
-  
+        
+        // Switch/Case statement to push the user to the different functions.
         switch (answers.choice) {
             case 'view all departments':
                 await viewDepartments();
@@ -54,7 +59,7 @@ async function init() {
                 await addEmployee();
                 break;
             case 'update an employee role':
-                updateEmployee();
+                await updateEmployee();
                 break;
             case 'quit':
                 return;
@@ -65,6 +70,7 @@ async function init() {
     init();
 }
 
+// Views all departments
 async function viewDepartments() {
     try {
       const result = await queryAsync('SELECT * FROM department')
@@ -72,8 +78,11 @@ async function viewDepartments() {
     } catch (err) {
       console.error(err)
     }
+
+    //console.log("Exiting viewDepartments")
 }
 
+// Views all roles and includes the department they belong to
 async function viewRoles() {
     try{
         const result = await queryAsync(`
@@ -85,8 +94,11 @@ async function viewRoles() {
     } catch (err) {
         console.error(err)
     }
+
+    //console.log("Exiting viewRoles")
 }
 
+// Views all employees and includes their roles and manager names
 async function viewEmployees() {
     try {
         const result = await queryAsync(`
@@ -104,8 +116,11 @@ async function viewEmployees() {
     } catch (err) {
         console.error(err)
     }
+
+    //console.log("Exiting viewEmployees")
 }
 
+// Creates a new department
 async function addDepartment() {
     try {
         const answers = await inquirer.prompt([
@@ -122,8 +137,11 @@ async function addDepartment() {
     } catch (err) {
       console.error(err);
     }
+
+    //console.log("Exiting addDepartment")
 }
 
+// Creates a new Role, and adds it to a Department
 async function addRole() {
     try {
         const departments = await queryAsync('SELECT id, dep_name FROM department');
@@ -162,8 +180,11 @@ async function addRole() {
     } catch (err) {
       console.error(err);
     }
+
+    //console.log("Exiting addRole")
 }
 
+// Creates a new Employee, gives them a Role, and gives them a Manager.
 async function addEmployee() {
     try {
         const roles = await queryAsync('SELECT id, title FROM roles')
@@ -216,8 +237,11 @@ async function addEmployee() {
     } catch (err) {
       console.error(err);
     }
+
+    console.log("Exiting addEmployee")
 }
 
+// Updates the role an employee has
 async function updateEmployee() {
     try {
         const roles = await queryAsync('SELECT id, title FROM roles')
@@ -256,10 +280,9 @@ async function updateEmployee() {
         console.log(`Updated role!`);
     } catch (err) {
         console.error(err);
-    } finally {
-        init();
     }
-}
 
+    //console.log("Exiting updateEmployee")
+}
 
 init()
