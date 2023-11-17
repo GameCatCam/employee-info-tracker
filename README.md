@@ -20,7 +20,7 @@ It is installed by cloning the repo and running "npm i" in the terminal. Make su
 
 It is mostly just to showcase my ability to use MySQL. You may use it yourself, but I am sure there are plenty of better alternatives lol.
 
-If you'd like, there is a video showcase of this program right [here]()
+If you'd like, there is a video showcase of this program right [here](https://drive.google.com/file/d/1CN-lDeKWShIcvEW2AM9z3ZZkeNWZAFyo/view)
 
 ## License
 
